@@ -31,4 +31,7 @@ Route::prefix('auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     // inventory routes
     Route::resource('/inventories', InventoryController::class);
+
+    // item routes
+    Route::resource('/items', ItemController::class);
 });
