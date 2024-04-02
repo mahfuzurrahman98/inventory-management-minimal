@@ -41,4 +41,9 @@ class User extends Authenticatable {
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    // one to many relationship between user and inventory
+    public function inventories() {
+        return $this->hasMany(Inventory::class);
+    }
 }
