@@ -18,4 +18,9 @@ class Inventory extends Model {
     public function user() {
         return $this->belongsTo(User::class);
     }
+
+    // each inventory has many items
+    public function items() {
+        return $this->hasMany(Item::class);
+    }
 }
