@@ -35,7 +35,7 @@ class InventoryController extends Controller {
         try {
             // validate the request data
             $validator = Validator::make($request->all(), [
-                'name' => 'required',
+                'name' => 'required|unique:inventories,name,NULL,NULL,user_id,' . $request->user()->id,
                 'description' => 'required'
             ]);
 
@@ -82,7 +82,7 @@ class InventoryController extends Controller {
                     'message' => 'Inventory not found'
                 ], 404);
             }
-            
+
             return response()->json([
                 'success' => true,
                 'data' => [
@@ -98,23 +98,47 @@ class InventoryController extends Controller {
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Inventory $inventory) {
-        try {
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Inventory $inventory) {
+    public function update(Request $request, int $id) {
         try {
+            // Find the inventory to update
+            $inventory = $request->user()->inventories()->find($id);
+
+            // Check if inventory exists
+            if (!$inventory) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Inventory not found'
+                ], 404);
+            }
+
+            // Validate the request data
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|unique:inventories,name,' . $inventory->id . ',id,user_id,' . $request->user()->id,
+                'description' => 'required'
+            ]);
+
+            // Return validation errors
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages()->toArray()
+                ], 422);
+            }
+
+            // Update the inventory
+            $inventory->name = $request->name;
+            $inventory->description = $request->description;
+            $inventory->save();
+
+            // Return success response
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'inventory' => $inventory
+                ]
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -126,8 +150,22 @@ class InventoryController extends Controller {
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Inventory $inventory) {
+    public function destroy(Request $request, int $id) {
         try {
+            $inventory = $request->user()->inventories()->find($id);
+
+            if (!$inventory) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Inventory not found'
+                ], 404);
+            }
+
+            $inventory->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Inventory deleted successfully'
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
