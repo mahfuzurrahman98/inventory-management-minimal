@@ -72,8 +72,17 @@ class InventoryController extends Controller {
     /**
      * Display the specified resource.
      */
-    public function show(Inventory $inventory) {
+    public function show(Request $request, int $id) {
         try {
+            $inventory = $request->user()->inventories()->find($id);
+
+            if (!$inventory) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Inventory not found'
+                ], 404);
+            }
+            
             return response()->json([
                 'success' => true,
                 'data' => [
