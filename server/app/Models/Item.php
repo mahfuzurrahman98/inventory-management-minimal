@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Item extends Model {
     use HasFactory;
 
+    // define accessor for image
+    public function getImageAttribute($value) {
+        return $value ? asset('storage/images/' . $value) : null;
+    }
+
     // define relationship with inventory
     public function inventory() {
         return $this->belongsTo(Inventory::class);
