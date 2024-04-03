@@ -79,7 +79,7 @@
 </template>
 
 <script setup>
-    import { axiosPrivate } from '../api/axios';
+    import axios from '../api/axios';
     import Layout from '../components/Layout.vue';
     import useAuthStore from '../stores/auth';
     import { ref } from 'vue';
@@ -97,7 +97,7 @@
 
         const authStore = useAuthStore();
 
-        const response = await axiosPrivate.post('/auth/login', formData.value);
+        const response = await axios.post('/auth/login', formData.value);
         const data = await response.data;
         const msg = await response.data.message;
         const respData = await response.data.data;
