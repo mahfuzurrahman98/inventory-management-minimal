@@ -41,7 +41,7 @@ class AuthController extends Controller {
 
         // Create a new access token for the user
         $accessToken = $user->createToken(
-            'authToken',
+            'accessToken',
             ["*"],
             now()->addMinutes(env('ACCESS_TOKEN_EXPIRATION_TIME'))
         )->plainTextToken;
@@ -104,7 +104,7 @@ class AuthController extends Controller {
 
         // Create a new access token for the user
         $accessToken = $user->createToken(
-            'authToken',
+            'accessToken',
             ["*"],
             now()->addMinutes(env('ACCESS_TOKEN_EXPIRATION_TIME'))
         )->plainTextToken;
@@ -165,7 +165,7 @@ class AuthController extends Controller {
 
         // Create a new access token for the user
         $accessToken = $user->createToken(
-            'authToken',
+            'accessToken',
             ["*"],
             now()->addMinutes(env('ACCESS_TOKEN_EXPIRATION_TIME'))
         )->plainTextToken;
