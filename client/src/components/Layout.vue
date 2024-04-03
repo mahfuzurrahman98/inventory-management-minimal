@@ -8,21 +8,7 @@
     </div>
 </template>
 
-<script>
+<script setup>
     import Header from './Header.vue';
     import Footer from './Footer.vue';
-
-    export default {
-        setup() {
-            return {
-                auth: {
-                    token: '',
-                    name: '',
-                },
-                handleLogout() {
-                    // handle logout
-                },
-            };
-        },
-    };
 </script>
