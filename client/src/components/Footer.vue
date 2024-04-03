@@ -1,55 +1,49 @@
 <template>
-    <div class="bg-white shadow">
-        <nav
-            class="w-full flex justify-between items-center mx-auto h-14 max-w-6xl px-4"
-        >
-            <div class="flex items-center">
-                <router-link
-                    to="/"
-                    class="text-2xl font-bold text-blue-800 leading-none"
+    <div className="flex flex-col justify-center mt-auto">
+        <div className="border-t-2 mb-2 border-gray-200 py-3 mt-12">
+            <p className="text-center">
+                <a
+                    href="https://mahfuzurrahman98.github.io"
+                    target="blank"
+                    className="text-blue-600 font-semibold"
                 >
-                    Swift Bank
-                </router-link>
+                    Mahfuzur Rahman Arif
+                </a>
+                <span className="ml-2">
+                    | All rights reserved, {{ new Date().getFullYear() }}
+                </span>
+            </p>
+            <div className="flex gap-x-5 justify-center mt-2">
+                <a :href="gmailLink" target="blank">
+                    <img
+                        src="../assets/icons/gmail.svg"
+                        alt=""
+                        className="w-5 md:w-6"
+                    />
+                </a>
+                |
+                <a :href="githubLink" target="blank">
+                    <img
+                        src="../assets/icons/github.svg"
+                        alt=""
+                        className="w-5 md:w-6"
+                    />
+                </a>
+                |
+                <a :href="linkedinLink" target="blank">
+                    <img
+                        src="../assets/icons/linkedin.svg"
+                        alt=""
+                        className="w-5 md:w-6"
+                    />
+                </a>
             </div>
-
-            <div
-                v-if="auth.token !== ''"
-                class="flex gap-x-2 justify-end items-center"
-            >
-                <div class="px-2 bg-gray-200 py-1">Welcome, Arif</div>
-                <div class="flex items-center">
-                    <button
-                        @click="handleLogout"
-                        class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-500"
-                    >
-                        Logout
-                    </button>
-                </div>
-            </div>
-
-            <div v-else class="flex justify-end items-center">
-                <div class="flex items-center">
-                    <router-link
-                        to="/login"
-                        class="bg-blue-800 text-white px-3 py-1 rounded-md hover:bg-blue-700"
-                    >
-                        Login
-                    </router-link>
-                </div>
-            </div>
-        </nav>
+        </div>
     </div>
 </template>
 
-<script setup>
-    import { ref } from 'vue';
-
-    const auth = ref({
-        token: '',
-        name: '',
-    });
-
-    const handleLogout = () => {
-        console.log('handleLogout');
-    };
+<script setup lang="ts">
+    const gmailLink = 'mailto:mdmahfuzurrahmanarif@gmail.com';
+    const githubLink = 'https://github.com/mahfuzurrahman98';
+    const linkedinLink = 'https://www.linkedin.com/in/mahfuzurrahman98/';
 </script>
