@@ -160,6 +160,9 @@ class AuthController extends Controller {
         // Get the user associated with the token
         $user = $token->tokenable;
 
+        // now delete the token
+        $token->delete();
+
         // Create a new access token for the user
         $accessToken = $user->createToken(
             'authToken',
