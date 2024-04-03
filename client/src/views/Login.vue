@@ -1,5 +1,5 @@
 <template>
-    <RootLayout>
+    <Layout>
         <div class="flex items-center justify-center mt-8 lg:mt-24">
             <div class="bg-white p-6 md:px-8 rounded shadow-md w-96">
                 <h1 class="text-2xl font-semibold mb-6">Login to start</h1>
@@ -75,32 +75,26 @@
                 </div>
             </div>
         </div>
-    </RootLayout>
+    </Layout>
 </template>
 
-<script>
+<script setup>
+    import Layout from '../components/Layout.vue';
     import { ref } from 'vue';
 
-    export default {
-        setup() {
-            const error = ref('');
-            const loading = ref(false);
-            const formData = ref({
-                email: '',
-                password: '',
-            });
+    const error = ref('');
+    const loading = ref(false);
+    const formData = ref({
+        email: '',
+        password: '',
+    });
 
-            const handleSubmit = () => {
-                // log the data
-                console.log(formData.value);
-            };
+    const handleSubmit = () => {
+        // log the data
+        console.log(formData.value);
+    };
 
-            return {
-                error,
-                loading,
-                formData,
-                handleSubmit,
-            };
-        },
+    const handleLogout = () => {
+        console.log('handleLogout');
     };
 </script>
