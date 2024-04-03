@@ -15,4 +15,8 @@ app.use(router);
 const authStore = useAuthStore();
 setupAxiosInterceptors(authStore);
 
+authStore.refresh().catch(error => {
+    console.error(error);
+  });
+
 app.mount('#app');
