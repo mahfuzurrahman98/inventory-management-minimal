@@ -20,7 +20,7 @@
 
                 <form @submit.prevent="handleSubmit">
                     <div class="mb-4">
-                        <label for="email" class="block text-md font-semibold">
+                        <label for="email" class="block text-base font-medium">
                             Email
                         </label>
                         <input
@@ -37,7 +37,7 @@
                     <div class="mb-4">
                         <label
                             for="password"
-                            class="block text-md font-semibold"
+                            class="block text-base font-medium"
                         >
                             Password
                         </label>
@@ -79,7 +79,9 @@
 </template>
 
 <script setup>
+    import { axiosPrivate } from '../api/axios';
     import Layout from '../components/Layout.vue';
+    import useAuthStore from '../stores/auth';
     import { ref } from 'vue';
 
     const error = ref('');
@@ -89,9 +91,22 @@
         password: '',
     });
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         // log the data
         console.log(formData.value);
+
+        const authStore = useAuthStore();
+
+        const response = await axiosPrivate.post('/auth/login', formData.value);
+        const data = await response.data;
+        const msg = await response.data.message;
+        const respData = await response.data.data;
+        console.log(data);
+
+        authStore.setAuth({
+            token: respData.accessToken,
+            name: respData.user.name,
+        });
     };
 
     const handleLogout = () => {
