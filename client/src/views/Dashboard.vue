@@ -1,6 +1,6 @@
 <template>
     <Layout>
-        <h1>Hi, {{ auth.name }}</h1>
+        <h1>Hi, {{ auth.token }}</h1>
     </Layout>
 </template>
 
