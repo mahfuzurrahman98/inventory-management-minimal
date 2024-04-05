@@ -2,13 +2,14 @@
     <Layout>
         <div class="flex items-center justify-center mt-8 lg:mt-24">
             <div class="bg-white p-6 md:px-8 rounded shadow-md w-96">
-                <h1 class="text-2xl font-medium mb-6">Login to start</h1>
+                <h1 class="text-2xl font-medium mb-6">Register to start</h1>
 
                 <div
-                    v-if="error != ''"
+                    v-if="error"
                     class="bg-red-500 text-white px-3 py-1 rounded-md mb-4"
                 >
                     {{ error }}
+
                     <button
                         class="float-right focus:outline-none"
                         @click="error = ''"
@@ -18,6 +19,20 @@
                 </div>
 
                 <form @submit.prevent="handleSubmit">
+                    <div class="mb-4">
+                        <label for="name" class="block text-base font-medium">
+                            Name
+                        </label>
+                        <input
+                            type="text"
+                            name="name"
+                            id="name"
+                            v-model="formData.name"
+                            class="mt-1 px-3 py-2 w-full border rounded-md focus:outline-blue-700"
+                            placeholder="Enter your name"
+                            required
+                        />
+                    </div>
                     <div class="mb-4">
                         <label for="email" class="block text-base font-medium">
                             Email
@@ -47,7 +62,25 @@
                             v-model="formData.password"
                             class="mt-1 px-3 py-2 w-full border rounded-md focus:outline-blue-700"
                             placeholder="Enter your password"
-                            autocomplete="current-password"
+                            autocomplete="new-password"
+                            required
+                        />
+                    </div>
+                    <div class="mb-4">
+                        <label
+                            for="password_confirm"
+                            class="block text-base font-medium"
+                        >
+                            Confirm Password
+                        </label>
+                        <input
+                            type="password"
+                            name="password_confirm"
+                            id="password_confirm"
+                            v-model="formData.password_confirmation"
+                            class="mt-1 px-3 py-2 w-full border rounded-md focus:outline-blue-700"
+                            placeholder="Confirm your password"
+                            autocomplete="new-password"
                             required
                         />
                     </div>
@@ -58,16 +91,16 @@
                         }`"
                         :disabled="loading"
                     >
-                        {{ loading ? 'Loading...' : 'Login' }}
+                        {{ loading ? 'Loading...' : 'Register' }}
                     </button>
                 </form>
 
                 <div class="text-center mt-5">
                     <p class="text-gray-600 text-md font-sm">
-                        Don't have an account?
+                        Already have an account?
                         <span>
-                            <router-link class="text-blue-800" to="/register">
-                                Register
+                            <router-link class="text-blue-800" to="/login">
+                                Login
                             </router-link>
                         </span>
                     </p>
@@ -75,7 +108,6 @@
             </div>
         </div>
     </Layout>
-    <Toaster />
 </template>
 
 <script setup lang="ts">
@@ -89,8 +121,10 @@
     const error = ref('');
     const loading = ref(false);
     const formData = ref({
+        name: '',
         email: '',
         password: '',
+        password_confirmation: '',
     });
 
     const router = useRouter();
@@ -98,9 +132,13 @@
     const toast = useToast();
 
     const handleSubmit = async () => {
+        // log the data
+        console.log(formData.value);
+
         const authStore = useAuthStore();
+
         try {
-            const response = await axios.post('/auth/login', formData.value);
+            const response = await axios.post('/auth/register', formData.value);
             console.log(response);
             const data = await response.data;
             if (data.success) {
@@ -109,7 +147,7 @@
                     name: data.data.user.name,
                 });
 
-                toast.success('Login successful', {
+                toast.success('Registration successful', {
                     position: 'bottom-right',
                     timeout: 3000,
                     closeOnClick: false,
