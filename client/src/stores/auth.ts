@@ -11,6 +11,7 @@ const useUserStore = defineStore('auth', {
         return {
             token: '',
             name: '',
+            isRefreshing: false,
         };
     },
     actions: {
@@ -33,6 +34,7 @@ const useUserStore = defineStore('auth', {
             }
         },
         async refresh() {
+            this.isRefreshing = true;
             try {
                 const response = await axios.post('/auth/refresh', null, {
                     headers: { 'Content-Type': 'application/json' },
@@ -51,6 +53,8 @@ const useUserStore = defineStore('auth', {
                 await this.logout();
                 console.log('error from refresh function', error);
                 throw error;
+            } finally {
+                this.isRefreshing = false;
             }
         },
     },
