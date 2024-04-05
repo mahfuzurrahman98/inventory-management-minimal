@@ -26,7 +26,7 @@ class AuthController extends Controller {
         if ($validator->fails()) {
             return response([
                 'success' => false,
-                'message' => $validator->errors()->all()
+                'message' => $validator->errors()
             ], 422);
         }
 
@@ -81,7 +81,7 @@ class AuthController extends Controller {
         if ($validator->fails()) {
             return response([
                 'success' => false,
-                'message' => $validator->errors()->all()
+                'message' => $validator->errors()
             ], 422);
         }
 
