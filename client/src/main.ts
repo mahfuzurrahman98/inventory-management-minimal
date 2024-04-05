@@ -17,12 +17,15 @@ app.use(Toast);
 const authStore = useAuthStore();
 setupAxiosInterceptors(authStore);
 
-
-authStore.refresh().catch((error) => {
-    console.error(error);
-});
-
-
-app.mount('#app');
-
-app.use(router);
+authStore
+    .refresh()
+    .then(() => {
+        console.log('token is refreshed');
+    })
+    .catch((error) => {
+        console.error('refresh error:', error);
+    })
+    .finally(() => {
+        app.use(router);
+        app.mount('#app');
+    });
