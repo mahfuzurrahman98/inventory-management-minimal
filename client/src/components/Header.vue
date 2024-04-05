@@ -28,7 +28,10 @@
 
             <div v-else class="flex justify-end items-center">
                 <div class="flex items-center">
-                    <router-link to="/login" class="btn-login">
+                    <router-link
+                        to="/login"
+                        class="bg-blue-800 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+                    >
                         Login
                     </router-link>
                 </div>
