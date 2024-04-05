@@ -18,7 +18,7 @@
                     </button>
                 </div>
 
-                <form @submit.prevent="handleSubmit">
+                <form @submit.prevent="handleRegister">
                     <div class="mb-4">
                         <label for="name" class="block text-base font-medium">
                             Name
@@ -131,7 +131,7 @@
 
     const toast = useToast();
 
-    const handleSubmit = async () => {
+    const handleRegister = async () => {
         // log the data
         console.log(formData.value);
 
@@ -164,10 +164,8 @@
 
                 // await for 3 seconds
                 await new Promise((resolve) => setTimeout(resolve, 3000));
-                router.push({ name: 'dashboard' });
+                router.push({ name: 'inventories' });
             } else {
-                console.log(data);
-                error.value = 'Invalid credentials';
             }
         } catch (err: any) {
             if (err.response.status == 422) {

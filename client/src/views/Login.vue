@@ -17,7 +17,7 @@
                     </button>
                 </div>
 
-                <form @submit.prevent="handleSubmit">
+                <form @submit.prevent="handleLogin">
                     <div class="mb-4">
                         <label for="email" class="block text-base font-medium">
                             Email
@@ -97,7 +97,7 @@
 
     const toast = useToast();
 
-    const handleSubmit = async () => {
+    const handleLogin = async () => {
         const authStore = useAuthStore();
         try {
             const response = await axios.post('/auth/login', formData.value);
@@ -126,7 +126,7 @@
 
                 // await for 3 seconds
                 await new Promise((resolve) => setTimeout(resolve, 3000));
-                router.push({ name: 'dashboard' });
+                router.push({ name: 'inventories' });
             } else {
                 console.log(data);
                 error.value = 'Invalid credentials';
