@@ -116,7 +116,7 @@
     import useAuthStore from '../stores/auth';
     import { ref } from 'vue';
     import { useRouter } from 'vue-router';
-    import { useToast } from 'vue-toastification';
+    import { POSITION, useToast } from 'vue-toastification';
 
     const error = ref('');
     const loading = ref(false);
@@ -148,7 +148,7 @@
                 });
 
                 toast.success('Registration successful', {
-                    position: 'bottom-right',
+                    position: POSITION.BOTTOM_RIGHT,
                     timeout: 3000,
                     closeOnClick: false,
                     pauseOnFocusLoss: true,
