@@ -40,6 +40,8 @@ router.beforeEach(async (to, from, next) => {
     const _protected = to.meta.protected;
     const auth = useAuthStore();
 
+    from;
+
     const isAuthenticated = auth.token !== '';
 
     console.log(auth.token);
