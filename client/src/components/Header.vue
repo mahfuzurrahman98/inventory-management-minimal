@@ -6,12 +6,11 @@
             <div class="flex items-center">
                 <router-link
                     to="/"
-                    class="text-2xl font-bold text-blue-800 leading-none"
+                    class="text-2xl font-semibold text-blue-800 leading-none"
                 >
-                    Swift Bank
+                    Inventrory Management
                 </router-link>
             </div>
-
             <div
                 v-if="auth.token !== ''"
                 class="flex gap-x-2 justify-end items-center"
@@ -29,10 +28,7 @@
 
             <div v-else class="flex justify-end items-center">
                 <div class="flex items-center">
-                    <router-link
-                        to="/login"
-                        class="bg-blue-800 text-white px-3 py-1 rounded-md hover:bg-blue-700"
-                    >
+                    <router-link to="/login" class="btn-login">
                         Login
                     </router-link>
                 </div>
@@ -41,15 +37,21 @@
     </div>
 </template>
 
-<script setup>
-    import { ref } from 'vue';
+<script setup lang="ts">
+    import useAuthStore from '../stores/auth';
+    import { useRouter } from 'vue-router';
 
-    const auth = ref({
-        token: '',
-        name: '',
-    });
+    const auth = useAuthStore();
+    const router = useRouter();
 
-    const handleLogout = () => {
-        console.log('handleLogout');
+    const handleLogout = async () => {
+        try {
+            console.log('handleLogout');
+            await auth.logout();
+
+            router.push({ name: 'login' });
+        } catch (error: any) {
+            console.error(error);
+        }
     };
 </script>
