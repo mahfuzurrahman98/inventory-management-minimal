@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ItemResource;
 use App\Models\Item;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -12,18 +13,26 @@ class ItemController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index() {
+    public function index(Request $request) {
         try {
             $user = auth()->user();
-            
-            $items = Item::whereHas('inventory', function ($query) use ($user) {
+
+            $itemsQry = Item::whereHas('inventory', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
-            })->paginate(10);
+            });
+
+            if ($request->inventoryId) {
+                $itemsQry->where('inventory_id', $request->inventoryId);
+            }
+
+            $items = $itemsQry->paginate(1000);
+            $total = $items->count();
 
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'items' => $items->data
+                    'items' => ItemResource::collection($items->items()),
+                    'total' => $total
                 ]
             ]);
         } catch (\Exception $e) {
@@ -53,7 +62,7 @@ class ItemController extends Controller {
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
-                    'message' => $validator->errors()->toArray()
+                    'message' => $validator->errors()
                 ], 422);
             }
 
@@ -151,28 +160,32 @@ class ItemController extends Controller {
                 ], 422);
             }
 
-            $imageName = $item->image;
 
-            // Store the item image and delete the old image
-            if ($request->hasFile('image')) {
-                // delete 
-                if ($imageName) {
-                    $imagePath = storage_path('app/public/images/' . $imageName);
-                    if (file_exists($imagePath)) {
-                        unlink($imagePath);
-                    }
-                }
-
-                $image = $request->file('image');
-                $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-                $imagePath = $image->storeAs('public/images', $imageName);
-            }
 
             // Update the item
             $item->name = $request->name;
             $item->description = $request->description;
-            $item->image = $imageName;
             $item->quantity = $request->quantity;
+
+            if ($request->has('image')) {
+                $imageName = $item->image;
+
+                // Store the item image and delete the old image
+                if ($request->hasFile('image')) {
+                    // delete 
+                    if ($imageName) {
+                        $imagePath = storage_path('app/public/images/' . $imageName);
+                        if (file_exists($imagePath)) {
+                            unlink($imagePath);
+                        }
+                    }
+
+                    $image = $request->file('image');
+                    $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
+                    $imagePath = $image->storeAs('public/images', $imageName);
+                }
+                $item->image = $imageName;
+            }
             $item->save();
 
             // Return success response
