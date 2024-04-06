@@ -3,6 +3,9 @@
         <div class="max-w-3xl w-full">
             <div class="flex justify-between">
                 <h3 class="text-2xl">Edit Item</h3>
+                <router-link to="/items" class="text-md underline">
+                    Back to Items
+                </router-link>
             </div>
             <hr class="mt-3 mb-10" />
             <form @submit.prevent="editItem" class="flex flex-col gap-y-3">
@@ -37,12 +40,13 @@
                     </select>
                 </div>
                 <div>
-                    <label for="description" class="text-base font-medium"
-                        >Description</label
-                    >
+                    <label for="description" class="text-base font-medium">
+                        Description (max 255 characters)
+                    </label>
                     <textarea
                         id="description"
                         v-model="item.description"
+                        maxlength="255"
                         required
                         class="mt-1 px-3 py-1 w-full border rounded-md focus:outline-blue-700"
                     ></textarea>
@@ -56,7 +60,7 @@
                         v-model.number="item.quantity"
                         type="number"
                         required
-                        class="mt-1 px-3 py-1 w-full rounded-md outline-2 focus:outline-blue-700"
+                        class="mt-1 px-3 py-1 w-full border rounded-md focus:outline-blue-700"
                     />
                 </div>
                 <div>
