@@ -1,7 +1,7 @@
 <template>
     <div class="bg-white shadow">
         <nav
-            class="w-full flex justify-between items-center mx-auto h-14 max-w-6xl px-4"
+            class="w-full flex justify-between items-center mx-auto h-14 max-w-7xl px-4"
         >
             <div class="flex items-center">
                 <router-link
