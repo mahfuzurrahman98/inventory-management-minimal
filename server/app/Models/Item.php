@@ -10,7 +10,7 @@ class Item extends Model {
 
     // define accessor for image
     public function getImageAttribute($value) {
-        return $value ? asset('storage/images/' . $value) : null;
+        return $value ? '/api/storage/' . $value : null;
     }
 
     // define relationship with inventory
