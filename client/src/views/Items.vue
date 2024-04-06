@@ -171,7 +171,10 @@
     import Layout from '../components/Layout.vue';
     import formatError from '../helpers/formatError';
     import { POSITION, useToast } from 'vue-toastification';
+    import { useRoute } from 'vue-router';
     import { ItemType } from '../types';
+
+    const route = useRoute();
 
     const items = ref<ItemType[]>([]);
 
@@ -188,6 +191,12 @@
     const currentPage = ref(1);
     const limit = ref(2);
     const totalItems = ref(0);
+
+    const queryParams = ref({
+        page: 1,
+        limit: 10,
+        inventoryId: route.query.inventoryId,
+    });
 
     const showDeleteModal = ref(false);
 
@@ -211,7 +220,13 @@
 
     const getItems = async () => {
         try {
-            const response = await axiosPrivate.get(`/items`);
+            const response = await axiosPrivate.get(
+                `/items${
+                    queryParams.value.inventoryId
+                        ? `?inventoryId=${queryParams.value.inventoryId}`
+                        : ''
+                }`
+            );
             const data = response.data;
             items.value = data.data.items;
             totalItems.value = data.data.total;
