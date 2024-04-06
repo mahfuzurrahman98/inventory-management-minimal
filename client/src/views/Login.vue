@@ -100,6 +100,7 @@
     const handleLogin = async () => {
         const authStore = useAuthStore();
         try {
+            loading.value = true;
             const response = await axios.post('/auth/login', formData.value);
             console.log(response);
             const data = await response.data;
@@ -143,6 +144,8 @@
             } else {
                 error.value = err.response.data.message;
             }
+        } finally {
+            loading.value = false;
         }
     };
 </script>
