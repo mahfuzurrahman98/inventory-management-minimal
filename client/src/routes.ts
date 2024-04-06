@@ -5,6 +5,9 @@ import Login from './views/Login.vue';
 import Register from './views/Register.vue';
 import Inventories from './views/Inventories.vue';
 import Items from './views/Items.vue';
+import CreateItem from './views/CreateItem.vue';
+import EditItem from './views/EditItem.vue';
+import NotFound from './views/NotFound.vue';
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -30,6 +33,29 @@ const routes: Array<RouteRecordRaw> = [
         name: 'items',
         component: Items,
         meta: { protected: 1 },
+    },
+    {
+        path: '/items/create',
+        name: 'create_item',
+        component: CreateItem,
+        meta: { protected: 1 },
+    },
+    {
+        path: '/items/:id/edit',
+        name: 'edit_item',
+        component: EditItem,
+        meta: { protected: 1 },
+    },
+    {
+        path: '/',
+        redirect: '/inventories',
+        meta: { protected: 1 },
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'not-found',
+        component: NotFound,
+        meta: { protected: 0 },
     },
 ];
 
