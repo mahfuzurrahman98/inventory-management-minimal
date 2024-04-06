@@ -12,11 +12,18 @@ class InventoryController extends Controller {
      */
     public function index(Request $request) {
         try {
-            $inventories = $request->user()->inventories;
+            $limit = $request->input('limit', 10);
+            $inventoriesQry = Inventory::where('user_id', $request->user()->id);
+
+            $inventories = $inventoriesQry
+                ->paginate($limit);
+            $total = $inventories->count();
+
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'inventories' => $inventories
+                    'inventories' => $inventories->items(),
+                    'total' => $total
                 ]
             ], 200);
         } catch (\Exception $e) {
@@ -123,7 +130,7 @@ class InventoryController extends Controller {
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
-                    'message' => $validator->messages()->toArray()
+                    'message' => $validator->messages()
                 ], 422);
             }
 
