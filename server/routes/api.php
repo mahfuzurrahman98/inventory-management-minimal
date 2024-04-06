@@ -1,9 +1,10 @@
 <?php
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
+use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\InventoryController;
 
 /*
@@ -34,4 +35,21 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // item routes
     Route::resource('/items', ItemController::class);
+});
+
+// file stream route
+Route::get('/storage/{filename}', function ($filename) {
+    $path = storage_path('app/public/images/' . $filename);
+    // dd($path);
+    if (!File::exists($path)) {
+        abort(404);
+    }
+
+    $file = File::get($path);
+    $type = File::mimeType($path);
+
+    $response = Response::make($file, 200);
+    $response->header('Content-Type', $type);
+
+    return $response;
 });
