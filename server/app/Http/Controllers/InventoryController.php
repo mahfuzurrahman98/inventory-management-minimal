@@ -43,7 +43,7 @@ class InventoryController extends Controller {
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
-                    'message' => $validator->messages()->toArray()
+                    'message' => $validator->messages()
                 ], 422);
             }
 
