@@ -3,3 +3,13 @@ export type InventoryType = {
     name: string;
     description: string;
 };
+
+export type ItemType = {
+    id: number | null;
+    name: string;
+    image: string | null;
+    description: string;
+    quantity: number;
+    inventory: string | null;
+    inventory_id: number | null;
+};
