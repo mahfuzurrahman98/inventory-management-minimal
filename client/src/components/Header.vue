@@ -15,7 +15,9 @@
                 v-if="auth.token !== ''"
                 class="flex gap-x-2 justify-end items-center"
             >
-                <div class="px-2 bg-gray-200 py-1">Welcome, Arif Rahman</div>
+                <div class="px-2 bg-gray-200 py-1">
+                    Welcome, {{ auth.name }}
+                </div>
                 <div class="flex items-center">
                     <button
                         @click="handleLogout"
