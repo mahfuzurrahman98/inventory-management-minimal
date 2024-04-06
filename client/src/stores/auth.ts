@@ -22,7 +22,10 @@ const useUserStore = defineStore('auth', {
         async logout() {
             try {
                 await axios.post('/auth/logout', null, {
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${this.token}`,
+                    },
                     withCredentials: true,
                 });
                 this.setAuth({
