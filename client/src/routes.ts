@@ -4,6 +4,7 @@ import useAuthStore from '../src/stores/auth';
 import Login from './views/Login.vue';
 import Register from './views/Register.vue';
 import Inventories from './views/Inventories.vue';
+import Items from './views/Items.vue';
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -22,6 +23,12 @@ const routes: Array<RouteRecordRaw> = [
         path: '/inventories',
         name: 'inventories',
         component: Inventories,
+        meta: { protected: 1 },
+    },
+    {
+        path: '/items',
+        name: 'items',
+        component: Items,
         meta: { protected: 1 },
     },
 ];
