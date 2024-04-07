@@ -311,6 +311,7 @@
 
     const getInventories = async () => {
         try {
+            componentLoading.value = true;
             const response = await axiosPrivate.get(`/inventories`);
             const data = response.data;
             inventories.value = data.data.inventories;
