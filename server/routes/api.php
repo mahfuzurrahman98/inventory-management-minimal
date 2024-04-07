@@ -39,7 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // file stream route
 Route::get('/storage/{filename}', function ($filename) {
-    $path = storage_path('app/public/images/' . $filename);
+    $path = public_path('/images/' . $filename);
     // dd($path);
     if (!File::exists($path)) {
         abort(404);
