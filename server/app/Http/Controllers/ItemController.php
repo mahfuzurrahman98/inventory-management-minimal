@@ -1,6 +1,3 @@
-Certainly! Here's the code with proper comments:
-
-```php
 <?php
 
 namespace App\Http\Controllers;
