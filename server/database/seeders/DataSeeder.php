@@ -24,13 +24,13 @@ class DataSeeder extends Seeder {
 
         foreach ($users as $user) {
 
-            $inventories = Inventory::factory()->count(5)->create([
+            $inventories = Inventory::factory()->count(7)->create([
                 'user_id' => $user->id
             ]);
 
             foreach ($inventories as $inventory) {
 
-                Item::factory()->count(20)->create([
+                Item::factory()->count(18)->create([
                     'inventory_id' => $inventory->id
                 ]);
             }
