@@ -38,18 +38,18 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // file stream route
-Route::get('/storage/{filename}', function ($filename) {
-    $path = public_path('/images/' . $filename);
-    // dd($path);
-    if (!File::exists($path)) {
-        abort(404);
-    }
+// Route::get('/storage/{filename}', function ($filename) {
+//     $path = public_path('/images/' . $filename);
+//     // dd($path);
+//     if (!File::exists($path)) {
+//         abort(404);
+//     }
 
-    $file = File::get($path);
-    $type = File::mimeType($path);
+//     $file = File::get($path);
+//     $type = File::mimeType($path);
 
-    $response = Response::make($file, 200);
-    $response->header('Content-Type', $type);
+//     $response = Response::make($file, 200);
+//     $response->header('Content-Type', $type);
 
-    return $response;
-});
+//     return $response;
+// });
