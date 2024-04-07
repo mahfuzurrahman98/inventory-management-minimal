@@ -3,10 +3,7 @@
         <div class="max-w-3xl w-full">
             <div class="flex justify-between">
                 <h3 class="text-2xl">Create Item</h3>
-                <router-link
-                    to="/items"
-                    class="text-md underline"
-                >
+                <router-link to="/items" class="text-md underline">
                     Back to Items
                 </router-link>
             </div>
@@ -71,7 +68,7 @@
                         >Image</label
                     >
                     <img
-                        v-if="item.image"
+                        v-if="item.image && typeof item.image === 'string'"
                         :src="item.image"
                         alt="Item Image"
                         class="border-2 border-gray-200 mt-1 w-36 h-24 object-cover rounded-md"
@@ -143,7 +140,7 @@
     const onFileChange = (e: Event) => {
         const file = (e.target as HTMLInputElement).files![0];
         console.log(file);
-        item.value.image = URL.createObjectURL(file);
+        item.value.image = file;
     };
 
     const getInventories = async () => {
@@ -178,7 +175,11 @@
 
             console.log(formData);
             // return;
-            await axiosPrivate.post('/items', formData);
+            await axiosPrivate.post('/items', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
             toast.success('Item created successfully', toastOptions);
             router.push('/items');
         } catch (error) {

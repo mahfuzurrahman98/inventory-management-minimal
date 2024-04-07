@@ -68,7 +68,15 @@
                         >Image</label
                     >
                     <img
-                        v-if="item.image"
+                        v-if="
+                            selectedImage && typeof selectedImage === 'object'
+                        "
+                        :src="selectedImageSrc"
+                        alt="Item Image"
+                        class="border-2 border-gray-200 mt-1 w-36 h-24 object-cover rounded-md"
+                    />
+                    <img
+                        v-else-if="item.image && typeof item.image === 'string'"
                         :src="item.image"
                         alt="Item Image"
                         class="border-2 border-gray-200 mt-1 w-36 h-24 object-cover rounded-md"
@@ -99,7 +107,7 @@
 </template>
 
 <script setup lang="ts">
-    import { onMounted, ref } from 'vue';
+    import { computed, onMounted, ref } from 'vue';
     import { useRouter } from 'vue-router';
     import { useRoute } from 'vue-router';
     import { POSITION, useToast } from 'vue-toastification';
@@ -121,7 +129,7 @@
         inventory: '',
         inventory_id: null,
     });
-    const selectedImage = ref<string>('');
+    const selectedImage = ref<File | string | null>('');
 
     const editBtnLoading = ref(false);
     const toast = useToast();
@@ -143,7 +151,7 @@
     const onFileChange = (e: Event) => {
         const file = (e.target as HTMLInputElement).files![0];
         console.log(file);
-        selectedImage.value = URL.createObjectURL(file);
+        selectedImage.value = file;
     };
 
     const getInventories = async () => {
@@ -168,6 +176,12 @@
         }
     };
 
+    const selectedImageSrc = computed(() => {
+        return selectedImage.value && typeof selectedImage.value === 'object'
+            ? URL.createObjectURL(selectedImage.value)
+            : '';
+    });
+
     const editItem = async () => {
         try {
             if (!item.value.inventory_id) {
@@ -175,12 +189,13 @@
                 return;
             }
             const formData = new FormData();
+            formData.append('_method', 'PUT');
             formData.append('name', item.value.name);
             formData.append('description', item.value.description);
             formData.append('quantity', item.value.quantity.toString());
             // send image only if it is present
             if (selectedImage.value) {
-                formData.append('image', item.value.image!);
+                formData.append('image', selectedImage.value);
             }
 
             formData.append(
@@ -190,7 +205,11 @@
 
             console.log(formData);
             // return;
-            await axiosPrivate.put(`/items/${route.params.id}`, formData);
+            await axiosPrivate.post(`/items/${route.params.id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
             toast.success('Item updated successfully', toastOptions);
             router.push('/items');
         } catch (error) {
