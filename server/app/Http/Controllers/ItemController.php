@@ -49,6 +49,7 @@ class ItemController extends Controller {
      */
     public function store(Request $request) {
         try {
+            // dd($request->all(   ));
             // Validate the request data
             $validator = Validator::make($request->all(), [
                 'inventory_id' => 'required|integer|exists:inventories,id,user_id,' . $request->user()->id,
