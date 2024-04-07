@@ -2,11 +2,11 @@
     "rewrites": [
         {
             "source": "/api/:path*",
-            "destination": "https://api-inv-mgt.vercel.app/api/:path*"
+            "destination": "https://acoustic-reproducti.000webhostapp.com/public/api/:path*"
         },
         {
             "source": "/api/:path*/",
-            "destination": "https://api-inv-mgt.vercel.app/api/:path*"
+            "destination": "https://acoustic-reproducti.000webhostapp.com/public/api/:path*"
         },
         {
             "source": "/:path*",
