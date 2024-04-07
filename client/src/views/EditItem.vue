@@ -43,14 +43,6 @@
                         </option>
                     </select>
                 </div>
-                <div
-                    v-else
-                    className="flex flex-col items-center justify-center h-full"
-                >
-                    <div
-                        className="w-24 h-24 border-8 border-dashed rounded-full animate-spin border-blue-800"
-                    ></div>
-                </div>
 
                 <div>
                     <label for="description" class="text-base font-medium">
@@ -115,6 +107,15 @@
                     </button>
                 </div>
             </form>
+            <div
+                v-else
+                className="flex flex-col items-center justify-center h-full"
+            >
+                <div
+                    className="w-24 h-24 border-8 border-dashed rounded-full animate-spin border-blue-800"
+                ></div>
+                <p class="mt-5 text-gray-500">Please wait while we load the edit form...</p>
+            </div>
         </div>
     </Layout>
 </template>

@@ -118,6 +118,9 @@
                 <div
                     className="w-24 h-24 border-8 border-dashed rounded-full animate-spin border-blue-800"
                 ></div>
+                <p class="mt-5 text-gray-500">
+                    Please wait while we load the create form...
+                </p>
             </div>
         </div>
 
