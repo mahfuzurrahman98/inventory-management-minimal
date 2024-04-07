@@ -13,23 +13,28 @@ class DataSeeder extends Seeder {
      * Run the database seeds.
      */
     public function run(): void {
-        // there are two users with id 1 and 2
-        // each user can have many inventories
-        // each inventory can have many items
-        // no inventory can have same name inside the same user
-        // no two items can have the same name inside the same inventory
-        // create 5 inventories with 20 items each for each user
+        // crate two users
+        User::create([
+            'name' => 'Arif',
+            'email' => 'arif@gmail.com',
+            'password' => bcrypt('arifPass')
+        ]);
+        User::create([
+            'name' => 'Reza',
+            'email' => 'reza@gmail.com',
+            'password' => bcrypt('rezaPass')
+        ]);
 
         $users = User::all();
 
         foreach ($users as $user) {
-
+            // create 7 inventories for each user
             $inventories = Inventory::factory()->count(7)->create([
                 'user_id' => $user->id
             ]);
 
+            // create 18 items for each inventory
             foreach ($inventories as $inventory) {
-
                 Item::factory()->count(18)->create([
                     'inventory_id' => $inventory->id
                 ]);
