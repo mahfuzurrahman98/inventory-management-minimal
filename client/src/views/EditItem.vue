@@ -43,6 +43,15 @@
                         </option>
                     </select>
                 </div>
+                <div
+                    v-else
+                    className="flex flex-col items-center justify-center h-full"
+                >
+                    <div
+                        className="w-24 h-24 border-8 border-dashed rounded-full animate-spin border-blue-800"
+                    ></div>
+                </div>
+
                 <div>
                     <label for="description" class="text-base font-medium">
                         Description (max 255 characters)
