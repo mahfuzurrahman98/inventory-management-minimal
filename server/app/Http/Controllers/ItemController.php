@@ -1,3 +1,6 @@
+Certainly! Here's the code with proper comments:
+
+```php
 <?php
 
 namespace App\Http\Controllers;
@@ -15,12 +18,15 @@ class ItemController extends Controller {
      */
     public function index(Request $request) {
         try {
+            // Get the authenticated user
             $user = auth()->user();
 
+            // Query to fetch items related to the user
             $itemsQry = Item::whereHas('inventory', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             });
 
+            // Apply filters if any
             if ($request->inventoryId) {
                 $itemsQry->where('inventory_id', $request->inventoryId);
             }
@@ -29,17 +35,23 @@ class ItemController extends Controller {
                 $itemsQry->where('name', 'like', '%' . $request->name . '%');
             }
 
+            // Count total items
             $total = $itemsQry->count();
+
+            // Paginate items
             $items = $itemsQry->paginate(10);
 
+            // Return JSON response
             return response()->json([
                 'success' => true,
+                'message' => 'Items retrieved successfully',
                 'data' => [
                     'items' => ItemResource::collection($items->items()),
                     'total' => $total
                 ]
             ]);
         } catch (\Exception $e) {
+            // Handle exceptions
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
@@ -47,13 +59,11 @@ class ItemController extends Controller {
         }
     }
 
-
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {
         try {
-            // dd($request->all(   ));
             // Validate the request data
             $validator = Validator::make($request->all(), [
                 'inventory_id' => 'required|integer|exists:inventories,id,user_id,' . $request->user()->id,
@@ -77,8 +87,6 @@ class ItemController extends Controller {
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-                // $imagePath = $image->storeAs('public/images', $imageName);
-                // upload to /public/images, I mean in public folder not disk
                 $imagePath = $image->move(public_path('images'), $imageName);
             }
 
@@ -94,11 +102,13 @@ class ItemController extends Controller {
             // Return success response
             return response()->json([
                 'success' => true,
+                'message' => 'Item created successfully',
                 'data' => [
                     'item' => $item,
                 ]
             ], 201);
         } catch (\Exception $e) {
+            // Handle exceptions
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
@@ -109,11 +119,9 @@ class ItemController extends Controller {
     /**
      * Display the specified resource.
      */
-
-
     public function show(Item $item) {
         try {
-            // chechk the $item belongs to the authenticated user
+            // Check if the item belongs to the authenticated user
             if ($item->inventory->user_id !== auth()->id()) {
                 return response()->json([
                     'success' => false,
@@ -121,14 +129,16 @@ class ItemController extends Controller {
                 ], 403);
             }
 
+            // Return JSON response with the item details
             return response()->json([
                 'success' => true,
+                'message' => 'Item retrieved successfully',
                 'data' => [
                     'item' => $item
                 ]
             ]);
         } catch (\Exception $e) {
-            // Handle any other exceptions
+            // Handle exceptions
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
@@ -136,14 +146,12 @@ class ItemController extends Controller {
         }
     }
 
-
-
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Item $item) {
         try {
-            // chechk the $item belongs to the authenticated user
+            // Check if the item belongs to the authenticated user
             if ($item->inventory->user_id !== auth()->user()->id) {
                 return response()->json([
                     'success' => false,
@@ -163,23 +171,21 @@ class ItemController extends Controller {
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
-                    'message' => $validator->errors()->toArray()
+                    'message' => $validator->errors()
                 ], 422);
             }
 
-
-
-            // Update the item
+            // Update the item fields
             $item->name = $request->name;
             $item->description = $request->description;
             $item->quantity = $request->quantity;
 
+            // Update the item image if provided
             if ($request->has('image')) {
                 $imageName = $item->image;
 
-                // Store the item image and delete the old image
+                // Store the new item image and delete the old one
                 if ($request->hasFile('image')) {
-                    // delete 
                     if ($imageName) {
                         $imagePath = public_path('/images/' . $imageName);
                         if (file_exists($imagePath)) {
@@ -189,11 +195,13 @@ class ItemController extends Controller {
 
                     $image = $request->file('image');
                     $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-                    // $imagePath = $image->storeAs('public/images', $imageName);
                     $imagePath = $image->move(public_path('images'), $imageName);
                 }
+
                 $item->image = $imageName;
             }
+
+            // Save the updated item
             $item->save();
 
             // Return success response
@@ -204,7 +212,7 @@ class ItemController extends Controller {
                 ]
             ]);
         } catch (\Exception $e) {
-            // Handle any other exceptions
+            // Handle exceptions
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
@@ -217,7 +225,7 @@ class ItemController extends Controller {
      */
     public function destroy(Item $item) {
         try {
-            // chechk the $item belongs to the authenticated user
+            // Check if the item belongs to the authenticated user
             if ($item->inventory->user_id !== auth()->user()->id) {
                 return response()->json([
                     'success' => false,
@@ -225,12 +233,16 @@ class ItemController extends Controller {
                 ], 403);
             }
 
+            // Delete the item
             $item->delete();
+
+            // Return success response
             return response()->json([
                 'success' => true,
                 'message' => 'Item deleted successfully'
-            ], 200);
+            ]);
         } catch (\Exception $e) {
+            // Handle exceptions
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
