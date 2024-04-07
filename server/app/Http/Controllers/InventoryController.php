@@ -12,18 +12,22 @@ class InventoryController extends Controller {
      */
     public function index(Request $request) {
         try {
+            // Query inventories belonging to the authenticated user
             $inventoriesQry = Inventory::where('user_id', $request->user()->id);
 
+            // Get the total count of inventories
             $total = $inventoriesQry->count();
 
+            // Apply search filter if name parameter is provided
             if ($request->name) {
                 $inventoriesQry->where('name', 'like', '%' . $request->name . '%');
             }
 
+            // Paginate the query results
             $inventories = $inventoriesQry
                 ->paginate(5);
 
-
+            // Return JSON response with paginated inventories and total count
             return response()->json([
                 'success' => true,
                 'data' => [
@@ -32,6 +36,7 @@ class InventoryController extends Controller {
                 ]
             ], 200);
         } catch (\Exception $e) {
+            // Handle exceptions and return error response
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
@@ -39,19 +44,18 @@ class InventoryController extends Controller {
         }
     }
 
-
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {
         try {
-            // validate the request data
+            // Validate the request data
             $validator = Validator::make($request->all(), [
                 'name' => 'required|unique:inventories,name,NULL,NULL,user_id,' . $request->user()->id,
                 'description' => 'required'
             ]);
 
-            // return validation errors
+            // Return validation errors if validation fails
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
@@ -59,14 +63,14 @@ class InventoryController extends Controller {
                 ], 422);
             }
 
-            // create a new inventory
+            // Create a new inventory
             $inventory = Inventory::create([
                 'name' => $request->name,
                 'description' => $request->description,
                 'user_id' => $request->user()->id
             ]);
 
-            // return success response
+            // Return success response with the created inventory
             return response()->json([
                 'success' => true,
                 'data' => [
@@ -74,6 +78,7 @@ class InventoryController extends Controller {
                 ]
             ], 201);
         } catch (\Exception $e) {
+            // Handle exceptions and return error response
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
@@ -86,8 +91,10 @@ class InventoryController extends Controller {
      */
     public function show(Request $request, int $id) {
         try {
+            // Find the inventory belonging to the authenticated user by ID
             $inventory = $request->user()->inventories()->find($id);
 
+            // Return error response if inventory is not found
             if (!$inventory) {
                 return response()->json([
                     'success' => false,
@@ -95,6 +102,7 @@ class InventoryController extends Controller {
                 ], 404);
             }
 
+            // Return success response with the found inventory
             return response()->json([
                 'success' => true,
                 'data' => [
@@ -102,6 +110,7 @@ class InventoryController extends Controller {
                 ]
             ], 200);
         } catch (\Exception $e) {
+            // Handle exceptions and return error response
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
@@ -114,10 +123,10 @@ class InventoryController extends Controller {
      */
     public function update(Request $request, int $id) {
         try {
-            // Find the inventory to update
+            // Find the inventory to update belonging to the authenticated user
             $inventory = $request->user()->inventories()->find($id);
 
-            // Check if inventory exists
+            // Return error response if inventory is not found
             if (!$inventory) {
                 return response()->json([
                     'success' => false,
@@ -131,7 +140,7 @@ class InventoryController extends Controller {
                 'description' => 'required'
             ]);
 
-            // Return validation errors
+            // Return validation errors if validation fails
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
@@ -139,13 +148,13 @@ class InventoryController extends Controller {
                 ], 422);
             }
 
-            // Update the inventory
+            // Update the inventory with the validated data
             $inventory->update([
                 'name' => $request->name,
                 'description' => $request->description
             ]);
 
-            // Return success response
+            // Return success response with the updated inventory
             return response()->json([
                 'success' => true,
                 'data' => [
@@ -153,6 +162,7 @@ class InventoryController extends Controller {
                 ]
             ], 200);
         } catch (\Exception $e) {
+            // Handle exceptions and return error response
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
@@ -165,8 +175,10 @@ class InventoryController extends Controller {
      */
     public function destroy(Request $request, int $id) {
         try {
+            // Find the inventory to delete belonging to the authenticated user
             $inventory = $request->user()->inventories()->find($id);
 
+            // Return error response if inventory is not found
             if (!$inventory) {
                 return response()->json([
                     'success' => false,
@@ -174,12 +186,15 @@ class InventoryController extends Controller {
                 ], 404);
             }
 
+            // Delete the inventory
             $inventory->delete();
+
+            // Return success response
             return response()->json([
-                'success' => true,
-                'message' => 'Inventory deleted successfully'
+                'success' => true
             ], 200);
         } catch (\Exception $e) {
+            // Handle exceptions and return error response
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
