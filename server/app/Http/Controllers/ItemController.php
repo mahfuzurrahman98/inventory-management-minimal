@@ -25,8 +25,12 @@ class ItemController extends Controller {
                 $itemsQry->where('inventory_id', $request->inventoryId);
             }
 
-            $items = $itemsQry->paginate(1000);
-            $total = $items->count();
+            if ($request->name) {
+                $itemsQry->where('name', 'like', '%' . $request->name . '%');
+            }
+
+            $total = $itemsQry->count();
+            $items = $itemsQry->paginate(10);
 
             return response()->json([
                 'success' => true,
