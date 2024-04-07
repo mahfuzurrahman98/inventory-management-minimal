@@ -39,22 +39,26 @@ Follow these steps to set up the Inventory Management System locally:
    ```
    php artisan migrate
    ```
-6. Start the PHP server:
+6. Seed the database:
+   ```
+   php artisan db:seed --class=DataSeeder
+   ```
+7. Start the PHP server:
 
    ```
    php artisan serve
    ```
-7. In a new terminal window, navigate into the client directory:
+8. In a new terminal window, navigate into the client directory:
 
    ```
    cd client
    ```
-8. Install the Node.js dependencies:
+9. Install the Node.js dependencies:
 
    ```
    npm install
    ```
-9. Start the development server:
+10. Start the development server:
 
    ```
    npm run dev
