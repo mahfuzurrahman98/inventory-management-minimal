@@ -8,7 +8,7 @@
                     to="/"
                     class="text-2xl font-semibold text-blue-800 leading-none"
                 >
-                    Inventrory Management
+                    Stocky
                 </router-link>
             </div>
             <div
