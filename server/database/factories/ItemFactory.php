@@ -24,7 +24,9 @@ class ItemFactory extends Factory {
 
         // Download the image and save it to the storage
         $contents = file_get_contents($imageUrl);
-        Storage::put("public/images/{$filename}", $contents);
+        // Storage::put("public/images/{$filename}", $contents);
+        // put on publuc path /images
+        Storage::disk('public')->put("images/{$filename}", $contents);
 
 
         return [
