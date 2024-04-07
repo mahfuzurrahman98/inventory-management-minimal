@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import useAuthStore from '../stores/auth';
-const BASE_URL = '/api/api';
+const BASE_URL = '/api';
 
 export default axios.create({
     baseURL: BASE_URL,
