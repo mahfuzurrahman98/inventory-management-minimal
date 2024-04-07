@@ -109,6 +109,7 @@
                     token: data.data.accessToken,
                     name: data.data.user.name,
                 });
+                localStorage.setItem('token', data.data.accessToken);
 
                 toast.success('Login successful', {
                     position: POSITION.BOTTOM_RIGHT,

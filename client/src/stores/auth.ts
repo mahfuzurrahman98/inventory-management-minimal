@@ -32,6 +32,7 @@ const useUserStore = defineStore('auth', {
                     token: '',
                     name: '',
                 });
+                localStorage.removeItem('token');
             } catch (err) {
                 console.error(err);
             }
@@ -50,6 +51,7 @@ const useUserStore = defineStore('auth', {
                     token: data.accessToken,
                     name: data.user.name,
                 });
+                localStorage.setItem('token', data.accessToken);
 
                 return data.accessToken;
             } catch (error) {

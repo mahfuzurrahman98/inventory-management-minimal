@@ -75,9 +75,10 @@ router.beforeEach(async (to, from, next) => {
 
     from;
 
-    const isAuthenticated = auth.token !== '';
+    const isAuthenticated = localStorage.getItem('token');
 
-    console.log(auth.token);
+    console.log('to:', to);
+    console.log('auth', auth.token);
 
     if (_protected == 1 && !isAuthenticated) {
         next({ name: 'login' });
