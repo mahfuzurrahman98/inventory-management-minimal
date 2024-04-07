@@ -1,20 +1,31 @@
 <template>
-    <div class="flex justify-center items-center">
-        <button
-            @click="prevPage"
-            :disabled="currentPage === 1"
-            class="px-4 py-2 rounded bg-gray-300 mr-2"
-        >
-            Prev
-        </button>
-        <div>Page: {{ currentPage }} / {{ totalPages }}</div>
-        <button
-            @click="nextPage"
-            :disabled="currentPage === totalPages"
-            class="px-4 py-2 rounded bg-gray-300 ml-2"
-        >
-            Next
-        </button>
+    <div class="flex justify-between items-center gap-5">
+        <div>
+            Showing <span class="font-semibold">{{ limit }}</span> per page
+        </div>
+        <div class="flex justify-center items-center">
+            <button
+                @click="prevPage"
+                :disabled="currentPage === 1"
+                class="px-3 py-1 rounded mr-2 text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50"
+                :class="{ 'opacity-50 cursor-not-allowed': currentPage === 1 }"
+            >
+                Prev
+            </button>
+            <div class="text-black">
+                Page: {{ currentPage }} / {{ totalPages }}
+            </div>
+            <button
+                @click="nextPage"
+                :disabled="currentPage === totalPages"
+                class="px-3 py-1 rounded ml-2 text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50"
+                :class="{
+                    'opacity-50 cursor-not-allowed': currentPage === totalPages,
+                }"
+            >
+                Next
+            </button>
+        </div>
     </div>
 </template>
 
@@ -27,20 +38,20 @@
         totalItems: Number,
     });
 
-    console.log(props.currentPage);
-    console.log(props.totalItems);
+    console.log('on pagination:', props.currentPage, props.totalItems);
     const totalPages = Math.ceil(props.totalItems / props.limit);
-    // const totalPages = 78;
+    const emit = defineEmits(['pageChange']);
 
     const prevPage = () => {
-        if (currentPage > 1) {
-            emit('pageChange', currentPage - 1);
+        if (props.currentPage > 1) {
+            emit('pageChange', props.currentPage - 1);
         }
     };
 
     const nextPage = () => {
-        if (currentPage < totalPages.value) {
-            emit('pageChange', currentPage + 1);
+        if (props.currentPage < totalPages) {
+            console.log('next page');
+            emit('pageChange', props.currentPage + 1);
         }
     };
 </script>
