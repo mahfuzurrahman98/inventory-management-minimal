@@ -73,7 +73,9 @@ class ItemController extends Controller {
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-                $imagePath = $image->storeAs('public/images', $imageName);
+                // $imagePath = $image->storeAs('public/images', $imageName);
+                // upload to /public/images, I mean in public folder not disk
+                $imagePath = $image->move(public_path('images'), $imageName);
             }
 
             // Create a new item
@@ -175,7 +177,7 @@ class ItemController extends Controller {
                 if ($request->hasFile('image')) {
                     // delete 
                     if ($imageName) {
-                        $imagePath = storage_path('app/public/images/' . $imageName);
+                        $imagePath = public_path('/images/' . $imageName);
                         if (file_exists($imagePath)) {
                             unlink($imagePath);
                         }
@@ -183,7 +185,8 @@ class ItemController extends Controller {
 
                     $image = $request->file('image');
                     $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-                    $imagePath = $image->storeAs('public/images', $imageName);
+                    // $imagePath = $image->storeAs('public/images', $imageName);
+                    $imagePath = $image->move(public_path('images'), $imageName);
                 }
                 $item->image = $imageName;
             }
