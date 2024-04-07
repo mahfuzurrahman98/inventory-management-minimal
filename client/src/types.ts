@@ -7,7 +7,7 @@ export type InventoryType = {
 export type ItemType = {
     id: number | null;
     name: string;
-    image: string | null;
+    image: File | string | null;
     description: string;
     quantity: number;
     inventory: string | null;
