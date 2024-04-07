@@ -15,7 +15,7 @@
             <input
                 v-model="search.name"
                 type="text"
-                placeholder="Search items..."
+                placeholder="Search inventories..."
                 class="px-3 py-1 w-1/4 border rounded-md focus:outline-blue-700"
             />
 
