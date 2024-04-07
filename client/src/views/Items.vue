@@ -14,120 +14,135 @@
             <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="py-4 inline-block min-w-full sm:px-6 lg:px-8">
                     <div class="overflow-hidden">
-                        <table
-                            v-if="!componentLoading && items.length > 0"
-                            class="min-w-full"
-                        >
-                            <thead class="border-b bg-gray-50">
-                                <tr>
-                                    <th
-                                        scope="col"
-                                        class="text-sm text-left font-medium text-gray-900 px-6 py-4"
+                        <div v-if="!componentLoading && items.length > 0">
+                            <table class="min-w-full">
+                                <thead class="border-b bg-gray-50">
+                                    <tr>
+                                        <th
+                                            scope="col"
+                                            class="text-sm text-left font-medium text-gray-900 px-6 py-4"
+                                        >
+                                            #
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="text-sm text-left font-medium text-gray-900 px-6 py-4"
+                                        >
+                                            Name
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="text-sm text-left font-medium text-gray-900 px-6 py-4"
+                                        >
+                                            Inventory
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="text-sm text-left font-medium text-gray-900 px-6 py-4"
+                                        >
+                                            Description
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="text-sm text-left font-medium text-gray-900 px-6 py-4"
+                                        >
+                                            Quantity
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="text-sm text-left font-medium text-gray-900 px-6 py-4"
+                                        >
+                                            Actions
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        v-for="(item, index) in items"
+                                        :key="item.id!"
+                                        class="bg-white border-b"
                                     >
-                                        #
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        class="text-sm text-left font-medium text-gray-900 px-6 py-4"
-                                    >
-                                        Name
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        class="text-sm text-left font-medium text-gray-900 px-6 py-4"
-                                    >
-                                        Inventory
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        class="text-sm text-left font-medium text-gray-900 px-6 py-4"
-                                    >
-                                        Description
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        class="text-sm text-left font-medium text-gray-900 px-6 py-4"
-                                    >
-                                        Quantity
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        class="text-sm text-left font-medium text-gray-900 px-6 py-4"
-                                    >
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    v-for="(item, index) in items"
-                                    :key="item.id!"
-                                    class="bg-white border-b"
-                                >
-                                    <td
-                                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                                    >
-                                        {{
-                                            (currentPage - 1) * limit +
-                                            index +
-                                            1
-                                        }}
-                                    </td>
-                                    <td
-                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                                    >
-                                        <div class="flex items-center gap-x-3">
-                                            <img
-                                                v-if="
-                                                    item.image &&
-                                                    typeof item.image ===
-                                                        'string'
-                                                "
-                                                :src="item.image"
-                                                alt="item.name"
-                                                class="w-10 h-10 rounded-sm"
-                                            />
-                                            <p>{{ item.name }}</p>
-                                        </div>
-                                    </td>
-                                    <td
-                                        class="text-sm text-left text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                                    >
-                                        {{ item.inventory }}
-                                    </td>
-                                    <td
-                                        class="text-sm text-left text-gray-900 font-light px-6 py-4 whitespace-break-spaces"
-                                    >
-                                        {{
-                                            item.description.substring(0, 35)
-                                        }}...
-                                    </td>
-                                    <td
-                                        class="text-sm text-left text-gray-900 font-light px-6 py-4"
-                                    >
-                                        {{ item.quantity }}
-                                    </td>
-                                    <td
-                                        class="text-sm text-center flex text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                                    >
-                                        <div class="flex gap-x-5">
-                                            <router-link
-                                                :to="`/items/${item.id}/edit`"
-                                                class="font-medium text-blue-600 hover:text-blue-900"
+                                        <td
+                                            class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                                        >
+                                            {{
+                                                (queryParams.page - 1) * 10 +
+                                                index +
+                                                1
+                                            }}
+                                        </td>
+                                        <td
+                                            class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
+                                        >
+                                            <div
+                                                class="flex items-center gap-x-3"
                                             >
-                                                Edit
-                                            </router-link>
-                                            <button
-                                                @click="initDeleteItem(item)"
-                                                class="font-medium text-red-600 hover:text-red-900"
-                                            >
-                                                Delete
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                                <img
+                                                    v-if="
+                                                        item.image &&
+                                                        typeof item.image ===
+                                                            'string'
+                                                    "
+                                                    :src="item.image"
+                                                    alt="item.name"
+                                                    class="w-10 h-10 rounded-sm"
+                                                />
+                                                <p>{{ item.name }}</p>
+                                            </div>
+                                        </td>
+                                        <td
+                                            class="text-sm text-left text-gray-900 font-light px-6 py-4 whitespace-nowrap"
+                                        >
+                                            {{ item.inventory }}
+                                        </td>
+                                        <td
+                                            class="text-sm text-left text-gray-900 font-light px-6 py-4 whitespace-break-spaces"
+                                        >
+                                            {{
+                                                item.description.substring(
+                                                    0,
+                                                    35
+                                                )
+                                            }}...
+                                        </td>
+                                        <td
+                                            class="text-sm text-left text-gray-900 font-light px-6 py-4"
+                                        >
+                                            {{ item.quantity }}
+                                        </td>
+                                        <td
+                                            class="text-sm text-center flex text-gray-900 font-light px-6 py-4 whitespace-nowrap"
+                                        >
+                                            <div class="flex gap-x-5">
+                                                <router-link
+                                                    :to="`/items/${item.id}/edit`"
+                                                    class="font-medium text-blue-600 hover:text-blue-900"
+                                                >
+                                                    Edit
+                                                </router-link>
+                                                <button
+                                                    @click="
+                                                        initDeleteItem(item)
+                                                    "
+                                                    class="font-medium text-red-600 hover:text-red-900"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                                <div class="mt-2">
+                                    <Pagination
+                                        :currentPage="queryParams.page"
+                                        :limit="10"
+                                        :totalItems="totalItems"
+                                        @pageChange="handlePageChange"
+                                    />
+                                </div>
+                            </table>
+                        </div>
                         <div
                             v-else-if="componentLoading"
                             className="flex flex-col items-center justify-center h-full"
@@ -189,16 +204,18 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, onMounted } from 'vue';
+    import { ref, onMounted, onUpdated } from 'vue';
     import { axiosPrivate } from '../api/axios';
     import Modal from '../components/Modal.vue';
     import Layout from '../components/Layout.vue';
     import formatError from '../helpers/formatError';
     import { POSITION, useToast } from 'vue-toastification';
-    import { useRoute } from 'vue-router';
+    import { useRoute, useRouter } from 'vue-router';
     import { ItemType } from '../types';
+    import Pagination from '../components/Pagination.vue';
 
     const route = useRoute();
+    const router = useRouter();
 
     const items = ref<ItemType[]>([]);
 
@@ -212,13 +229,12 @@
         inventory_id: null,
     });
 
-    const currentPage = ref(1);
-    const limit = ref(2);
+    // const currentPage = ref(1);
+    // const limit = ref(3);
     const totalItems = ref(0);
 
     const queryParams = ref({
         page: 1,
-        limit: 10,
         inventoryId: route.query.inventoryId,
     });
 
@@ -246,13 +262,14 @@
     const getItems = async () => {
         try {
             componentLoading.value = true;
-            const response = await axiosPrivate.get(
-                `/items${
-                    queryParams.value.inventoryId
-                        ? `?inventoryId=${queryParams.value.inventoryId}`
-                        : ''
-                }`
-            );
+            let url = '/items/?';
+            if (queryParams.value.inventoryId) {
+                url += `inventoryId=${queryParams.value.inventoryId}&`;
+            }
+            if (queryParams.value.page) {
+                url += `page=${queryParams.value.page}&`;
+            }
+            const response = await axiosPrivate.get(url);
             const data = response.data;
             items.value = data.data.items;
             totalItems.value = data.data.total;
@@ -286,5 +303,32 @@
         }
     };
 
-    onMounted(getItems);
+    const handlePageChange = (page: number) => {
+        // currentPage.value = page;
+        queryParams.value.page = page;
+
+        router.push({ query: queryParams.value });
+        getItems();
+    };
+
+    const setQueryParams = () => {
+        const invenotoryId = route.query.inventoryId;
+        if (invenotoryId) {
+            queryParams.value.inventoryId = invenotoryId;
+        }
+        const page = route.query.page;
+        if (page) {
+            queryParams.value.page = parseInt(page.toString());
+        }
+    };
+
+    onMounted(() => {
+        setQueryParams();
+        getItems();
+    });
+
+    onUpdated(() => {
+        setQueryParams();
+        getItems();
+    });
 </script>
