@@ -60,11 +60,11 @@ class InventoryController extends Controller {
             }
 
             // create a new inventory
-            $inventory = new Inventory();
-            $inventory->name = $request->name;
-            $inventory->description = $request->description;
-            $inventory->user_id = $request->user()->id;
-            $inventory->save();
+            $inventory = Inventory::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'user_id' => $request->user()->id
+            ]);
 
             // return success response
             return response()->json([
@@ -140,9 +140,10 @@ class InventoryController extends Controller {
             }
 
             // Update the inventory
-            $inventory->name = $request->name;
-            $inventory->description = $request->description;
-            $inventory->save();
+            $inventory->update([
+                'name' => $request->name,
+                'description' => $request->description
+            ]);
 
             // Return success response
             return response()->json([
