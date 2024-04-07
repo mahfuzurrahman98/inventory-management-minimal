@@ -12,12 +12,17 @@ class InventoryController extends Controller {
      */
     public function index(Request $request) {
         try {
-            $limit = $request->input('limit', 10);
             $inventoriesQry = Inventory::where('user_id', $request->user()->id);
 
+            $total = $inventoriesQry->count();
+
+            if ($request->name) {
+                $inventoriesQry->where('name', 'like', '%' . $request->name . '%');
+            }
+
             $inventories = $inventoriesQry
-                ->paginate($limit);
-            $total = $inventories->count();
+                ->paginate(5);
+
 
             return response()->json([
                 'success' => true,
