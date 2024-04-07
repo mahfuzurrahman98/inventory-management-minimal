@@ -10,106 +10,157 @@
             </button>
         </div>
         <hr class="mt-3 mb-10" />
+
+        <form @submit.prevent="handleFilter" class="flex gap-3">
+            <input
+                v-model="search.name"
+                type="text"
+                placeholder="Search items..."
+                class="px-3 py-1 w-1/4 border rounded-md focus:outline-blue-700"
+            />
+
+            <button
+                type="submit"
+                class="bg-blue-700 text-white px-3 py-1 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+            >
+                Filter
+            </button>
+            <a
+                href="javascript:void(0)"
+                @click="
+                    () => {
+                        search = { name: '' };
+                        router.push('/inventories');
+                    }
+                "
+                class="bg-gray-700 text-white px-3 py-1 rounded-md hover:bg-gray-600 focus:outline-none focus:shadow-outline-gray active:bg-gray-800"
+            >
+                Clear
+            </a>
+        </form>
+
         <div class="flex flex-col w-full">
             <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="py-4 inline-block min-w-full sm:px-6 lg:px-8">
                     <div class="overflow-hidden">
-                        <table
-                            v-if="inventories.length > 0 && !componentLoading"
-                            class="min-w-full"
-                        >
-                            <thead class="border-b bg-gray-50">
-                                <tr>
-                                    <th
-                                        scope="col"
-                                        class="text-sm text-left font-medium text-gray-900 px-6 py-4"
+                        <div v-if="inventories.length > 0 && !componentLoading">
+                            <table class="min-w-full">
+                                <thead class="border-b bg-gray-50">
+                                    <tr>
+                                        <th
+                                            scope="col"
+                                            class="text-sm text-left font-medium text-gray-900 px-6 py-4"
+                                        >
+                                            #
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="text-sm text-left font-medium text-gray-900 px-6 py-4"
+                                        >
+                                            Name
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="text-sm text-left font-medium text-gray-900 px-6 py-4"
+                                        >
+                                            Description
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="text-sm text-left font-medium text-gray-900 px-6 py-4"
+                                        >
+                                            Actions
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        v-for="(
+                                            inventory, index
+                                        ) in inventories"
+                                        :key="inventory.id!"
+                                        class="bg-white border-b"
                                     >
-                                        #
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        class="text-sm text-left font-medium text-gray-900 px-6 py-4"
-                                    >
-                                        Name
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        class="text-sm text-left font-medium text-gray-900 px-6 py-4"
-                                    >
-                                        Description
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        class="text-sm text-left font-medium text-gray-900 px-6 py-4"
-                                    >
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    v-for="(inventory, index) in inventories"
-                                    :key="inventory.id!"
-                                    class="bg-white border-b"
-                                >
-                                    <td
-                                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                                    >
-                                        {{
-                                            (currentPage - 1) * limit +
-                                            index +
-                                            1
-                                        }}
-                                    </td>
-                                    <td
-                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                                    >
-                                        {{ inventory.name }}
-                                    </td>
-                                    <td
-                                        class="text-sm text-left text-gray-900 font-light px-6 py-4 whitespace-break-spaces"
-                                    >
-                                        {{ inventory.description }}
-                                    </td>
-                                    <td
-                                        class="text-sm text-center flex justify-center text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                                    >
-                                        <div class="flex gap-x-5">
-                                            <router-link
-                                                :to="{
-                                                    name: 'items',
-                                                    query: {
-                                                        inventoryId:
-                                                            inventory.id,
-                                                    },
-                                                }"
-                                                class="font-medium text-green-700 hover:text-green-900"
-                                            >
-                                                View Items
-                                            </router-link>
-                                            <button
-                                                @click="
-                                                    initEditInventroy(inventory)
-                                                "
-                                                class="font-medium text-blue-600 hover:text-blue-900"
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                @click="
-                                                    initDeleteInventory(
-                                                        inventory
-                                                    )
-                                                "
-                                                class="font-medium text-red-600 hover:text-red-900"
-                                            >
-                                                Delete
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        <td
+                                            class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                                        >
+                                            {{
+                                                (route.query.page
+                                                    ? parseInt(
+                                                          route.query.page.toString()
+                                                      )
+                                                    : 1 - 1) *
+                                                    5 +
+                                                index +
+                                                1
+                                            }}
+                                        </td>
+                                        <td
+                                            class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
+                                        >
+                                            {{ inventory.name }}
+                                        </td>
+                                        <td
+                                            class="text-sm text-left text-gray-900 font-light px-6 py-4 whitespace-break-spaces"
+                                        >
+                                            {{ inventory.description }}
+                                        </td>
+                                        <td
+                                            class="text-sm text-center flex justify-center text-gray-900 font-light px-6 py-4 whitespace-nowrap"
+                                        >
+                                            <div class="flex gap-x-5">
+                                                <router-link
+                                                    :to="{
+                                                        name: 'items',
+                                                        query: {
+                                                            inventoryId:
+                                                                inventory.id,
+                                                        },
+                                                    }"
+                                                    class="font-medium text-green-700 hover:text-green-900"
+                                                >
+                                                    View Items
+                                                </router-link>
+                                                <button
+                                                    @click="
+                                                        initEditInventroy(
+                                                            inventory
+                                                        )
+                                                    "
+                                                    class="font-medium text-blue-600 hover:text-blue-900"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    @click="
+                                                        initDeleteInventory(
+                                                            inventory
+                                                        )
+                                                    "
+                                                    class="font-medium text-red-600 hover:text-red-900"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="mt-2 flex justify-end">
+                                <Pagination
+                                    :currentPage="
+                                        route.query.page
+                                            ? parseInt(
+                                                  route.query.page.toString()
+                                              )
+                                            : 1
+                                    "
+                                    :limit="5"
+                                    :totalItems="totalInventories"
+                                    @pageChange="handlePageChange"
+                                />
+                            </div>
+                        </div>
                         <div
                             v-else-if="componentLoading"
                             className="flex flex-col items-center justify-center h-full"
@@ -288,13 +339,18 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, onMounted } from 'vue';
+    import { ref, onMounted, onUpdated } from 'vue';
     import { axiosPrivate } from '../api/axios';
     import Modal from '../components/Modal.vue';
     import Layout from '../components/Layout.vue';
     import formatError from '../helpers/formatError';
+    import { useRoute, useRouter } from 'vue-router';
     import { POSITION, useToast } from 'vue-toastification';
     import { InventoryType } from '../types';
+    import Pagination from '../components/Pagination.vue';
+
+    const router = useRouter();
+    const route = useRoute();
 
     const componentLoading = ref(false);
     const inventories = ref<InventoryType[]>([]);
@@ -309,8 +365,8 @@
         name: '',
         description: '',
     });
-    const currentPage = ref(1);
-    const limit = ref(2);
+
+    const search = ref({ name: '' });
     const totalInventories = ref(0);
 
     const showAddModal = ref(false);
@@ -340,7 +396,16 @@
     const getInventories = async () => {
         try {
             componentLoading.value = true;
-            const response = await axiosPrivate.get(`/inventories`);
+            let url = '/inventories/?';
+
+            if (route.query.name) {
+                url += `name=${route.query.name}&`;
+            }
+            if (route.query.page) {
+                url += `page=${route.query.page}&`;
+            }
+
+            const response = await axiosPrivate.get(url);
             const data = response.data;
             inventories.value = data.data.inventories;
             totalInventories.value = data.data.total;
@@ -429,5 +494,17 @@
         }
     };
 
+    const handlePageChange = (page: number) => {
+        router.push({ query: { ...route.query, page: page } });
+        getInventories();
+    };
+
+    const handleFilter = () => {
+        router.push({
+            query: { ...route.query, ...search.value },
+        });
+    };
+
     onMounted(getInventories);
+    onUpdated(getInventories);
 </script>

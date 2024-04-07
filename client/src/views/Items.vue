@@ -10,6 +10,47 @@
             </router-link>
         </div>
         <hr class="mt-3 mb-10" />
+
+        <form @submit.prevent="handleFilter" class="flex gap-3">
+            <input
+                v-model="search.name"
+                type="text"
+                placeholder="Search items..."
+                class="px-3 py-1 w-1/4 border rounded-md focus:outline-blue-700"
+            />
+            <select
+                v-model="search.inventoryId"
+                class="px-3 py-1 w-1/4 border rounded-md focus:outline-blue-700"
+            >
+                <option value="">All Inventories</option>
+                <option
+                    v-for="inventory in inventories"
+                    :key="inventory.id!"
+                    :value="inventory.id"
+                >
+                    {{ inventory.name }}
+                </option>
+            </select>
+            <button
+                type="submit"
+                class="bg-blue-700 text-white px-3 py-1 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+            >
+                Filter
+            </button>
+            <a
+                href="javascript:void(0)"
+                @click="
+                    () => {
+                        search = { name: '', inventoryId: '' };
+                        router.push('/items');
+                    }
+                "
+                class="bg-gray-700 text-white px-3 py-1 rounded-md hover:bg-gray-600 focus:outline-none focus:shadow-outline-gray active:bg-gray-800"
+            >
+                Clear
+            </a>
+        </form>
+
         <div class="flex flex-col w-full">
             <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="py-4 inline-block min-w-full sm:px-6 lg:px-8">
@@ -66,7 +107,12 @@
                                             class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
                                         >
                                             {{
-                                                (queryParams.page - 1) * 10 +
+                                                (route.query.page
+                                                    ? parseInt(
+                                                          route.query.page.toString()
+                                                      )
+                                                    : 1 - 1) *
+                                                    10 +
                                                 index +
                                                 1
                                             }}
@@ -132,16 +178,22 @@
                                         </td>
                                     </tr>
                                 </tbody>
-
-                                <div class="mt-2">
-                                    <Pagination
-                                        :currentPage="queryParams.page"
-                                        :limit="10"
-                                        :totalItems="totalItems"
-                                        @pageChange="handlePageChange"
-                                    />
-                                </div>
                             </table>
+
+                            <div class="mt-2 flex justify-end">
+                                <Pagination
+                                    :currentPage="
+                                        route.query.page
+                                            ? parseInt(
+                                                  route.query.page.toString()
+                                              )
+                                            : 1
+                                    "
+                                    :limit="10"
+                                    :totalItems="totalItems"
+                                    @pageChange="handlePageChange"
+                                />
+                            </div>
                         </div>
                         <div
                             v-else-if="componentLoading"
@@ -211,13 +263,18 @@
     import formatError from '../helpers/formatError';
     import { POSITION, useToast } from 'vue-toastification';
     import { useRoute, useRouter } from 'vue-router';
-    import { ItemType } from '../types';
+    import { InventoryType, ItemType } from '../types';
     import Pagination from '../components/Pagination.vue';
 
     const route = useRoute();
     const router = useRouter();
 
+    const search = ref({
+        name: '',
+        inventoryId: '',
+    });
     const items = ref<ItemType[]>([]);
+    const inventories = ref<InventoryType[]>([]);
 
     const deletedItem = ref<ItemType>({
         id: null,
@@ -229,14 +286,7 @@
         inventory_id: null,
     });
 
-    // const currentPage = ref(1);
-    // const limit = ref(3);
     const totalItems = ref(0);
-
-    const queryParams = ref({
-        page: 1,
-        inventoryId: route.query.inventoryId,
-    });
 
     const componentLoading = ref(false);
     const showDeleteModal = ref(false);
@@ -259,16 +309,34 @@
         rtl: false,
     };
 
+    const getInventories = async () => {
+        try {
+            const response = await axiosPrivate.get(`/inventories`);
+            const data = response.data;
+            inventories.value = data.data.inventories;
+        } catch (error) {
+            console.error(error);
+        } finally {
+            componentLoading.value = false;
+        }
+    };
+
     const getItems = async () => {
         try {
             componentLoading.value = true;
             let url = '/items/?';
-            if (queryParams.value.inventoryId) {
-                url += `inventoryId=${queryParams.value.inventoryId}&`;
+
+            if (route.query.inventoryId) {
+                search.value.inventoryId = route.query.inventoryId.toString();
+                url += `inventoryId=${route.query.inventoryId}&`;
             }
-            if (queryParams.value.page) {
-                url += `page=${queryParams.value.page}&`;
+            if (route.query.name) {
+                url += `name=${route.query.name}&`;
             }
+            if (route.query.page) {
+                url += `page=${route.query.page}&`;
+            }
+
             const response = await axiosPrivate.get(url);
             const data = response.data;
             items.value = data.data.items;
@@ -304,31 +372,24 @@
     };
 
     const handlePageChange = (page: number) => {
-        // currentPage.value = page;
-        queryParams.value.page = page;
-
-        router.push({ query: queryParams.value });
+        router.push({ query: { ...route.query, page: page } });
         getItems();
     };
 
-    const setQueryParams = () => {
-        const invenotoryId = route.query.inventoryId;
-        if (invenotoryId) {
-            queryParams.value.inventoryId = invenotoryId;
-        }
-        const page = route.query.page;
-        if (page) {
-            queryParams.value.page = parseInt(page.toString());
-        }
+    const handleFilter = () => {
+        router.push({
+            query: { ...route.query, ...search.value },
+        });
     };
 
-    onMounted(() => {
-        setQueryParams();
-        getItems();
+    onMounted(async () => {
+        try {
+            await getInventories();
+            await getItems();
+        } catch (error) {}
     });
 
     onUpdated(() => {
-        setQueryParams();
         getItems();
     });
 </script>
