@@ -17,21 +17,21 @@ class ItemFactory extends Factory {
      */
     public function definition(): array {
         // Generate a random filename for the image
-        $filename = Str::random(10) . '.jpg';
+        // $filename = Str::random(10) . '.jpg';
 
         // Get the URL of a random image
-        $imageUrl = $this->faker->imageUrl(640, 480, 'items', true);
+        // $imageUrl = $this->faker->imageUrl(640, 480, 'items', true);
 
         // Download the image and save it to the storage
-        $contents = file_get_contents($imageUrl);
-        // Storage::put("public/images/{$filename}", $contents);
-        // put on publuc path /images
-        Storage::disk('public')->put("images/{$filename}", $contents);
+        // $contents = file_get_contents($imageUrl);
+
+        // save it on /public folder
+        // file_put_contents(public_path("images/{$filename}"), $contents);
 
 
         return [
             'name' => $this->faker->word,
-            'image'=> "{$filename}",
+            // 'image' => "{$filename}",
             'description' => $this->faker->text(255),
             'quantity' => $this->faker->numberBetween(1, 18)
         ];
