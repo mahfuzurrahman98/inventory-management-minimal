@@ -8,7 +8,11 @@
                 </router-link>
             </div>
             <hr class="mt-3 mb-10" />
-            <form @submit.prevent="editItem" class="flex flex-col gap-y-3">
+            <form
+                v-if="!componentLoading"
+                @submit.prevent="editItem"
+                class="flex flex-col gap-y-3"
+            >
                 <div>
                     <label for="name" class="text-base font-medium">Name</label>
                     <input
@@ -119,6 +123,8 @@
     const router = useRouter();
     const route = useRoute();
 
+    const componentLoading = ref(true);
+
     const inventories = ref<InventoryType[]>([]);
     const item = ref<ItemType>({
         id: null,
@@ -223,7 +229,13 @@
     };
 
     onMounted(async () => {
-        await getInventories();
-        await getItem();
+        try {
+            componentLoading.value = true;
+            await getInventories();
+            await getItem();
+        } catch (error) {
+        } finally {
+            componentLoading.value = false;
+        }
     });
 </script>
