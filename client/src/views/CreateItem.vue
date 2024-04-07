@@ -82,8 +82,11 @@
                         >Image</label
                     >
                     <img
-                        v-if="item.image && typeof item.image === 'string'"
-                        :src="item.image"
+                        v-if="
+                            selectedImageSrc &&
+                            typeof selectedImageSrc === 'string'
+                        "
+                        :src="selectedImageSrc"
                         alt="Item Image"
                         class="border-2 border-gray-200 mt-1 w-36 h-24 object-cover rounded-md"
                     />
@@ -183,7 +186,7 @@
 </template>
 
 <script setup lang="ts">
-    import { onMounted, ref } from 'vue';
+    import { onMounted, ref, computed } from 'vue';
     import { useRouter } from 'vue-router';
     import { POSITION, useToast } from 'vue-toastification';
     import { axiosPrivate } from '../api/axios';
@@ -227,6 +230,12 @@
         icon: true,
         rtl: false,
     };
+
+    const selectedImageSrc = computed(() => {
+        return item.value.image && typeof item.value.image === 'object'
+            ? URL.createObjectURL(item.value.image)
+            : '';
+    });
 
     const onFileChange = (e: Event) => {
         const file = (e.target as HTMLInputElement).files![0];
