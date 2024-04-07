@@ -14,6 +14,54 @@ Before running Inventory Management System locally, make sure you have the follo
 - npm
 - MySQL
 
+## Setup
+
+Follow these steps to set up the Inventory Management System locally:
+
+1. Clone the repository:
+
+   ```
+   git clone <repository-url>
+   ```
+2. Navigate into the server directory:
+
+   ```
+   cd server
+   ```
+3. Install the PHP dependencies:
+
+   ```
+   composer update
+   ```
+4. Edit the database variables in the `.env` file.
+5. Run the database migrations:
+
+   ```
+   php artisan migrate
+   ```
+6. Start the PHP server:
+
+   ```
+   php artisan serve
+   ```
+7. In a new terminal window, navigate into the client directory:
+
+   ```
+   cd client
+   ```
+8. Install the Node.js dependencies:
+
+   ```
+   npm install
+   ```
+9. Start the development server:
+
+   ```
+   npm run dev
+   ```
+
+Now, you should be able to access the Inventory Management System in your web browser.
+
 ## Features
 
 - User-friendly interface for managing inventory, including item addition, deletion, and update
@@ -25,14 +73,14 @@ Before running Inventory Management System locally, make sure you have the follo
 
 - **Backend:**
 
-  - Laravel
   - PHP
+  - Laravel
   - MySQL
 - **Frontend:**
 
-  - Vue.js
   - JavaScript
   - HTML/CSS
+  - Vue.js
   - Tailwind
 - **Authentication:**
 
@@ -47,12 +95,16 @@ Before running Inventory Management System locally, make sure you have the follo
 
 Explore the Inventory Management System API using the [Postman API documentation](https://documenter.getpostman.com/view/23180955/2sA35MxdX4).
 
-## Demo Credentials
+## Live Link
+
+The live version of the application is hosted on [Vercel](https://vercel.com). Additionally the backend is hosted on [000webhost](https://www.000webhost.com) and the Mysql Database is on [Aiven](https://aiven.io)
+
+Access the live version of the application at [https://inventory-management-minimal.vercel.app](https://inventory-management-minimal.vercel.app)
 
 To access the application, use the following demo credentials:
 
-- Email: demo@example.com
-- Password: demoPassword
+- Email: arif@gmail.com
+- Password: arifPass
 
 ## Contributing
 
