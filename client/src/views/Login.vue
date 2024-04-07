@@ -125,8 +125,6 @@
                     rtl: false,
                 });
 
-                // await for 3 seconds
-                await new Promise((resolve) => setTimeout(resolve, 3000));
                 router.push({ name: 'inventories' });
             } else {
                 console.log(data);

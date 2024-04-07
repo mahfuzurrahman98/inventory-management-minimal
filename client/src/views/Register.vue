@@ -138,6 +138,7 @@
         const authStore = useAuthStore();
 
         try {
+            loading.value = true;
             const response = await axios.post('/auth/register', formData.value);
             console.log(response);
             const data = await response.data;
@@ -162,8 +163,6 @@
                     rtl: false,
                 });
 
-                // await for 3 seconds
-                await new Promise((resolve) => setTimeout(resolve, 3000));
                 router.push({ name: 'inventories' });
             } else {
             }
@@ -179,6 +178,8 @@
             } else {
                 error.value = err.response.data.message;
             }
+        } finally {
+            loading.value = false;
         }
     };
 </script>
