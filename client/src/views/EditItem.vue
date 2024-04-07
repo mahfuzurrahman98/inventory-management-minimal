@@ -184,6 +184,7 @@
 
     const editItem = async () => {
         try {
+            editBtnLoading.value = true;
             if (!item.value.inventory_id) {
                 toast.error('Please select an inventory', toastOptions);
                 return;
