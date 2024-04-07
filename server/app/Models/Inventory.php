@@ -13,7 +13,8 @@ class Inventory extends Model {
     // fillable fields
     protected $fillable = [
         'name',
-        'description'
+        'description',
+        'user_id'
     ];
 
     // each inventory belongs to a user
