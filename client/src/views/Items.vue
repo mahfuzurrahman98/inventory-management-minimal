@@ -14,7 +14,10 @@
             <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="py-4 inline-block min-w-full sm:px-6 lg:px-8">
                     <div class="overflow-hidden">
-                        <table v-if="items.length > 0" class="min-w-full">
+                        <table
+                            v-if="!componentLoading && items.length > 0"
+                            class="min-w-full"
+                        >
                             <thead class="border-b bg-gray-50">
                                 <tr>
                                     <th
@@ -125,7 +128,18 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <div v-else class="text-center text-2xl text-red-500">
+                        <div
+                            v-else-if="componentLoading"
+                            className="flex flex-col items-center justify-center h-full"
+                        >
+                            <div
+                                className="w-24 h-24 border-8 border-dashed rounded-full animate-spin border-blue-800"
+                            ></div>
+                        </div>
+                        <div
+                            v-else-if="!componentLoading && items.length === 0"
+                            class="text-center text-2xl text-red-500"
+                        >
                             No items found
                         </div>
                     </div>
@@ -150,7 +164,7 @@
                                 @click="
                                     () => {
                                         showDeleteModal = false;
-                                        deleteItem(deletedInventroy.id!);
+                                        deleteItem(deletedItem.id!);
                                     }
                                 "
                                 class="bg-red-700 text-white px-3 py-1 rounded-md text-md hover:bg-red-600 focus:outline-none focus:shadow-outline-red active:bg-red-800"
@@ -185,7 +199,7 @@
 
     const items = ref<ItemType[]>([]);
 
-    const deletedInventroy = ref<ItemType>({
+    const deletedItem = ref<ItemType>({
         id: null,
         name: '',
         image: '',
@@ -205,6 +219,7 @@
         inventoryId: route.query.inventoryId,
     });
 
+    const componentLoading = ref(false);
     const showDeleteModal = ref(false);
 
     const deleteBtnLoading = ref(false);
@@ -227,6 +242,7 @@
 
     const getItems = async () => {
         try {
+            componentLoading.value = true;
             const response = await axiosPrivate.get(
                 `/items${
                     queryParams.value.inventoryId
@@ -239,12 +255,14 @@
             totalItems.value = data.data.total;
         } catch (error) {
             console.error(error);
+        } finally {
+            componentLoading.value = false;
         }
     };
 
     const initDeleteItem = (item: ItemType) => {
         showDeleteModal.value = true;
-        deletedInventroy.value = { ...item };
+        deletedItem.value = { ...item };
     };
 
     const deleteItem = async (id: Number) => {

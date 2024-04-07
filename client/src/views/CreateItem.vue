@@ -8,7 +8,11 @@
                 </router-link>
             </div>
             <hr class="mt-3 mb-10" />
-            <form @submit.prevent="createItem" class="flex flex-col gap-y-3">
+            <form
+                v-if="!componentLoading"
+                @submit.prevent="createItem"
+                class="flex flex-col gap-y-3"
+            >
                 <div>
                     <label for="name" class="text-base font-medium">Name</label>
                     <input
@@ -39,6 +43,16 @@
                         </option>
                     </select>
                 </div>
+                <div v-else>
+                    <p
+                        to="/inventories/create"
+                        class="bg-blue-700 rounded text-white text-sm px-3 py-1"
+                        @click="showAddInventoryModal = true"
+                    >
+                        Create an inventory
+                    </p>
+                </div>
+
                 <div>
                     <label for="description" class="text-base font-medium"
                         >Description (max 255 characters)
@@ -84,17 +98,87 @@
                     <button
                         type="submit"
                         :class="`bg-blue-800 text-white px-3 py-2 rounded-md text-md hover:bg-blue-700 active:bg-blue-800 ${
-                            createBtnLoading
+                            createBtnLoading || inventories.length === 0
                                 ? 'opacity-50 cursor-not-allowed'
                                 : ''
                         }`"
-                        :disabled="createBtnLoading"
+                        :disabled="createBtnLoading || inventories.length === 0"
                     >
                         {{ createBtnLoading ? 'Creating...' : 'Create' }}
                     </button>
                 </div>
             </form>
+            <div
+                v-else
+                className="flex flex-col items-center justify-center h-full"
+            >
+                <div
+                    className="w-24 h-24 border-8 border-dashed rounded-full animate-spin border-blue-800"
+                ></div>
+            </div>
         </div>
+
+        <!-- Add Inventory Modal -->
+        <Teleport to="body">
+            <modal
+                :show="showAddInventoryModal"
+                @close="showAddInventoryModal = false"
+                title="Add Inventory"
+            >
+                <template #body>
+                    <form
+                        @submit.prevent="addInventory"
+                        class="flex flex-col gap-y-3"
+                    >
+                        <div>
+                            <label class="text-base font-medium" for="name"
+                                >Name:</label
+                            >
+                            <input
+                                type="text"
+                                id="name"
+                                v-model="newInventory.name"
+                                class="mt-1 px-3 py-1 w-full border rounded-md focus:outline-blue-700"
+                                placeholder="Enter inventory name"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label
+                                class="text-base font-medium"
+                                for="description"
+                                >Description:</label
+                            >
+                            <input
+                                type="text"
+                                id="description"
+                                v-model="newInventory.description"
+                                class="mt-1 px-3 py-1 w-full border rounded-md focus:outline-blue-700"
+                                placeholder="Enter invenotory description"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <button
+                                type="submit"
+                                :class="`bg-blue-800 text-white px-3 py-1 rounded-md text-md hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800 ${
+                                    addInventoryBtnLoading
+                                        ? 'opacity-50 cursor-not-allowed'
+                                        : ''
+                                }`"
+                                :disabled="addInventoryBtnLoading"
+                            >
+                                {{
+                                    addInventoryBtnLoading
+                                        ? 'Loading...'
+                                        : 'Save'
+                                }}
+                            </button>
+                        </div>
+                    </form>
+                </template>
+            </modal>
+        </Teleport>
     </Layout>
 </template>
 
@@ -106,10 +190,13 @@
     import Layout from '../components/Layout.vue';
     import { InventoryType, ItemType } from '../types';
     import formatError from '../helpers/formatError';
+    import Modal from '../components/Modal.vue';
 
     const router = useRouter();
 
     const inventories = ref<InventoryType[]>([]);
+    const newInventory = ref({ name: '', description: '' });
+
     const item = ref<ItemType>({
         id: null,
         name: '',
@@ -120,7 +207,11 @@
         inventory_id: null,
     });
 
+    const componentLoading = ref(true);
     const createBtnLoading = ref(false);
+    const addInventoryBtnLoading = ref(false);
+    const showAddInventoryModal = ref(false);
+
     const toast = useToast();
     const toastOptions: any = {
         position: POSITION.BOTTOM_RIGHT,
@@ -150,6 +241,33 @@
             inventories.value = data.data.inventories;
         } catch (error) {
             console.error(error);
+        } finally {
+            componentLoading.value = false;
+        }
+    };
+
+    const addInventory = async () => {
+        try {
+            addInventoryBtnLoading.value = true;
+
+            const response = await axiosPrivate.post(
+                '/inventories',
+                newInventory.value
+            );
+            const data = response.data;
+
+            if (data.success) {
+                showAddInventoryModal.value = false;
+                await getInventories();
+                toast.success('Inventory added successfully', toastOptions);
+            }
+        } catch (err: any) {
+            let errorMessage = formatError(err);
+
+            // alert(errorMessage);
+            toast.error(errorMessage, toastOptions);
+        } finally {
+            addInventoryBtnLoading.value = false;
         }
     };
 

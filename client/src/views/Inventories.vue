@@ -14,7 +14,10 @@
             <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="py-4 inline-block min-w-full sm:px-6 lg:px-8">
                     <div class="overflow-hidden">
-                        <table class="min-w-full">
+                        <table
+                            v-if="inventories.length > 0 && !componentLoading"
+                            class="min-w-full"
+                        >
                             <thead class="border-b bg-gray-50">
                                 <tr>
                                     <th
@@ -107,6 +110,22 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div
+                            v-else-if="componentLoading"
+                            className="flex flex-col items-center justify-center h-full"
+                        >
+                            <div
+                                className="w-24 h-24 border-8 border-dashed rounded-full animate-spin border-blue-800"
+                            ></div>
+                        </div>
+                        <div
+                            v-else-if="
+                                !componentLoading && inventories.length === 0
+                            "
+                            class="text-center text-2xl text-red-500"
+                        >
+                            No inventories found
+                        </div>
                     </div>
                 </div>
             </div>
@@ -274,6 +293,7 @@
     import { POSITION, useToast } from 'vue-toastification';
     import { InventoryType } from '../types';
 
+    const componentLoading = ref(false);
     const inventories = ref<InventoryType[]>([]);
     const newInventory = ref({ name: '', description: '' });
     const editedInventory = ref<InventoryType>({
@@ -316,12 +336,15 @@
 
     const getInventories = async () => {
         try {
+            componentLoading.value = true;
             const response = await axiosPrivate.get(`/inventories`);
             const data = response.data;
             inventories.value = data.data.inventories;
             totalInventories.value = data.data.total;
         } catch (error) {
             console.error(error);
+        } finally {
+            componentLoading.value = false;
         }
     };
 
