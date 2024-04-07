@@ -11,10 +11,21 @@
                     Stocky
                 </router-link>
             </div>
-            <div
-                v-if="auth.token !== ''"
-                class="flex gap-x-2 justify-end items-center"
-            >
+            <div v-if="auth.token !== ''" class="flex gap-x-5 items-center">
+                <router-link
+                    to="/inventories"
+                    class="text-lg font text-blue-800 leading-none"
+                >
+                    Inventories
+                </router-link>
+                <router-link
+                    to="/items"
+                    class="text-lg font text-blue-800 leading-none"
+                >
+                    Items
+                </router-link>
+            </div>
+            <div v-if="auth.token !== ''" class="flex gap-x-2 items-center">
                 <div class="px-2 bg-gray-200 py-1">
                     Welcome, {{ auth.name }}
                 </div>
@@ -27,16 +38,13 @@
                     </button>
                 </div>
             </div>
-
-            <div v-else class="flex justify-end items-center">
-                <div class="flex items-center">
-                    <router-link
-                        to="/login"
-                        class="bg-blue-800 text-white px-3 py-1 rounded-md hover:bg-blue-700"
-                    >
-                        Login
-                    </router-link>
-                </div>
+            <div v-else class="flex items-center">
+                <router-link
+                    to="/login"
+                    class="bg-blue-800 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+                >
+                    Login
+                </router-link>
             </div>
         </nav>
     </div>
