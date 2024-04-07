@@ -1,7 +1,11 @@
 <template>
     <div class="bg-white shadow">
         <nav
-            class="w-full flex flex-col md:flex-row md:justify-between items-center gap-y-4 mx-auto h-32 md:h-14 max-w-7xl px-4 py-2"
+            class="w-full flex flex-col md:flex-row md:justify-between items-center gap-y-4 mx-auto max-w-7xl px-4 py-2 md:h-14"
+            :class="{
+                'h-32': auth.token !== '',
+                'h-24': auth.token === '',
+            }"
         >
             <div class="flex items-center">
                 <router-link
