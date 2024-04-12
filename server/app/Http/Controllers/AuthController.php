@@ -238,16 +238,19 @@ class AuthController extends Controller {
      */
     public function logout(Request $request) {
         try {
-            // Delete the current access token of the authenticated user
-            $request->user()->currentAccessToken()->delete();
-
+            // Delete the current access token of the authenticated user if token exists
+            if($request->user()) {
+                $request->user()->currentAccessToken()->delete();
+            }
             // Retrieve the current refresh token from the cookie
             $refreshToken = $request->cookie('refreshToken');
 
-            // Find and delete the token matching the refresh token from the database
-            $personalAccessTokenModel = Sanctum::$personalAccessTokenModel;
-            $token = $personalAccessTokenModel::findToken($refreshToken);
-            $token->delete();
+            // Find and delete the token matching the refresh token from the database if token exists om cookies 
+            if($refreshToken) {
+                $personalAccessTokenModel = Sanctum::$personalAccessTokenModel;
+                $token = $personalAccessTokenModel::findToken($refreshToken);
+                $token->delete();
+            }
 
             // Return a success response with a message and remove the refresh token cookie
             return response()->json([
