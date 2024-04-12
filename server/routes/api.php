@@ -23,9 +23,12 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
 
+    // Make sure logout is called at even access token is not present in the request
+    // By default sanctum does not authenticate if token expires
+    Route::post('/logout', [AuthController::class, 'logout']);
+    
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/profile', [AuthController::class, 'profile']);
-        Route::post('/logout', [AuthController::class, 'logout']);
     });
 });
 
